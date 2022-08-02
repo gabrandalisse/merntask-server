@@ -1,29 +1,23 @@
-const express = require("express");
-const conectarDB = require("./config/db");
 const cors = require("cors");
+const express = require("express");
+const connectToDB = require("./config/db");
 
-// Crear el servidor
 const app = express();
 
-// Conectar a la BD
-conectarDB();
+connectToDB();
 
-// Habilitar cors
 app.use(cors());
 
-// Habilitar express.json para poder leer datos
+// Use express.json so we can read data
 app.use(express.json({ extended: true }));
 
-// Puerto de la app
-const port =  process.env.PORT || 4000;
+const port = process.env.PORT || 4000;
 
-// Rutas
-app.use("/api/usuarios", require("./routes/usuarios"));
+app.use("/api/users", require("./routes/users"));
 app.use("/api/auth", require("./routes/auth"));
-app.use("/api/proyectos", require("./routes/proyectos"));
-app.use("/api/tareas", require("./routes/tareas"));
+app.use("/api/projects", require("./routes/projects"));
+app.use("/api/tasks", require("./routes/tasks"));
 
-// Iniciar el servidor  
 app.listen(port, "0.0.0.0", () => {
-    console.log(`El servidor esta funcionado en el puerto ${port}`)
+  console.log(`the server is running in the port ${port}`);
 });
