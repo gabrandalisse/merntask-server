@@ -1,19 +1,10 @@
 const express = require("express");
-const router = express.Router();
-const { check } = require("express-validator");
-const authController = require("../controllers/authController");
 const auth = require("../middleware/auth");
+const AuthController = require("../controllers/auth-controller");
 
-// Iniciar Sesion
-// api/auth
-router.post("/",
-    authController.autenticarUsuario
-);
+const router = express.Router();
 
-// Obtener usuario autenticado
-router.get("/",
-    auth,
-    authController.usuarioAutenticado
-);
+router.post("/", AuthController.authenticateUser);
+router.get("/", auth, AuthController.authenticatedUser);
 
 module.exports = router;
