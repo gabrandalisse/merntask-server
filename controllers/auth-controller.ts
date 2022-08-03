@@ -1,8 +1,10 @@
-const jwt = require("jsonwebtoken");
-const bcryptjs = require("bcryptjs");
-const User = require("../models/Users");
+import jwt from "jsonwebtoken";
+import bcryptjs from "bcryptjs";
+import { Response } from "express";
+import User from "../models/Users";
 
-exports.authenticateUser = async (req, res) => {
+// TODO check any type in req
+export async function authenticateUser(req: any, res: Response) {
   const { email, password } = req.body;
 
   try {
@@ -23,7 +25,7 @@ exports.authenticateUser = async (req, res) => {
     // Sign the JWT
     jwt.sign(
       payload,
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET!,
       { expiresIn: 3600 },
       (error, token) => {
         if (error) throw error;
@@ -36,9 +38,9 @@ exports.authenticateUser = async (req, res) => {
       msg: "there was an error where triying to authenticate the user",
     });
   }
-};
+}
 
-exports.authenticatedUser = async (req, res) => {
+export async function authenticatedUser(req: any, res: Response) {
   try {
     const user = await User.findById(req.usuario.id).select("-password");
     res.json({ user });
@@ -48,4 +50,4 @@ exports.authenticatedUser = async (req, res) => {
       msg: "there was an error where triying to get the authenticated user",
     });
   }
-};
+}

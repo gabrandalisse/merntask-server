@@ -1,9 +1,10 @@
-const jwt = require("jsonwebtoken");
-const bcryptjs = require("bcryptjs");
-const User = require("../models/Users");
-const { validationResult } = require("express-validator");
+import jwt from "jsonwebtoken";
+import bcryptjs from "bcryptjs";
+import User from "../models/Users";
+import { Request, Response } from "express";
+import { validationResult } from "express-validator";
 
-exports.createUser = async (req, res) => {
+export async function createUser(req: Request, res: Response) {
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });
@@ -32,7 +33,7 @@ exports.createUser = async (req, res) => {
     // Sign the JWT
     jwt.sign(
       payload,
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET!,
       {
         expiresIn: 3600,
       },
@@ -41,11 +42,10 @@ exports.createUser = async (req, res) => {
         res.json({ token });
       }
     );
-    
   } catch (error) {
     console.log(error);
     res.status(500).json({
       msg: "there was an error where triying to create the user",
     });
   }
-};
+}

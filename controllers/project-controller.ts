@@ -1,7 +1,9 @@
-const Project = require("../models/Project");
-const { validationResult } = require("express-validator");
+import Project from "../models/Project";
+import { Request, Response } from "express";
+import { validationResult } from "express-validator";
 
-exports.createProject = async (req, res) => {
+// TODO check any types on req
+export async function createProject(req: any, res: Response) {
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });
@@ -19,9 +21,9 @@ exports.createProject = async (req, res) => {
       msg: "there was an error where triying to create the project",
     });
   }
-};
+}
 
-exports.getProjects = async (req, res) => {
+export async function getProjects(req: any, res: Response) {
   try {
     const projects = await Project.find({ owner: req.user.id }).sort({
       created: -1,
@@ -34,15 +36,15 @@ exports.getProjects = async (req, res) => {
       msg: "there was an error where triying to get all the projects",
     });
   }
-};
+}
 
-exports.updateProject = async (req, res) => {
+export async function updateProject(req: any, res: Response) {
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });
 
   const { name } = req.body;
-  const newProject = {};
+  const newProject: any = {};
 
   newProject.name = name;
 
@@ -67,10 +69,10 @@ exports.updateProject = async (req, res) => {
       msg: "there was an error where triying to update the project",
     });
   }
-};
+}
 
-exports.deleteProject = async (req, res) => {
-  const errores = validationResult(req);
+export async function deleteProject(req: any, res: Response) {
+  const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });
 
@@ -90,4 +92,4 @@ exports.deleteProject = async (req, res) => {
       msg: "there was an error where triying to delete the project",
     });
   }
-};
+}
