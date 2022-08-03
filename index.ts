@@ -1,6 +1,6 @@
 import cors from "cors";
 import connectToDB from "./config/db";
-import express, { Express, Request, Response } from "express";
+import express, { Express } from "express";
 
 // Routes
 import AuthRoutes from "./routes/auth";
