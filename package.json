@@ -2,9 +2,10 @@
   "name": "merntasks-server",
   "version": "2.0.0",
   "description": "the backend of the MERNTasks app",
-  "main": "src/index.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
+    "test": "jest --coverage"
   },
   "author": "Gabriel Andres Brandalisse",
   "license": "ISC",
