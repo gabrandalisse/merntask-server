@@ -1,9 +1,9 @@
-const express = require("express");
-const auth = require("../middleware/auth");
-const { check } = require("express-validator");
-const TaskController = require("../controllers/task-controller");
+import auth from "../middleware/auth";
+import express, { Router } from "express";
+import { check } from "express-validator";
+import * as TaskController from "../controllers/task-controller";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.post(
   "/",
@@ -21,4 +21,4 @@ router.put("/:id", auth, TaskController.updateTask);
 
 router.delete("/:id", auth, TaskController.deleteTask);
 
-module.exports = router;
+export default router;

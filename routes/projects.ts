@@ -1,9 +1,9 @@
-const express = require("express");
-const auth = require("../middleware/auth");
-const { check } = require("express-validator");
-const ProjectController = require("../controllers/project-controller");
+import auth from "../middleware/auth";
+import express, { Router } from "express";
+import { check } from "express-validator";
+import * as ProjectController from "../controllers/project-controller";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.post(
   "/",
@@ -23,4 +23,4 @@ router.put(
 
 router.delete("/:id", auth, ProjectController.deleteProject);
 
-module.exports = router;
+export default router;

@@ -1,7 +1,9 @@
-const Project = require("../models/Project");
-const { validationResult } = require("express-validator");
+import { Response } from "express";
+import Project from "../models/Project";
+import { ProjectRequest } from "../types/requests";
+import { validationResult } from "express-validator";
 
-exports.createProject = async (req, res) => {
+export async function createProject(req: ProjectRequest, res: Response) {
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });
@@ -19,9 +21,9 @@ exports.createProject = async (req, res) => {
       msg: "there was an error where triying to create the project",
     });
   }
-};
+}
 
-exports.getProjects = async (req, res) => {
+export async function getProjects(req: ProjectRequest, res: Response) {
   try {
     const projects = await Project.find({ owner: req.user.id }).sort({
       created: -1,
@@ -34,24 +36,23 @@ exports.getProjects = async (req, res) => {
       msg: "there was an error where triying to get all the projects",
     });
   }
-};
+}
 
-exports.updateProject = async (req, res) => {
+export async function updateProject(req: ProjectRequest, res: Response) {
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });
 
   const { name } = req.body;
-  const newProject = {};
-
-  newProject.name = name;
+  const newProject: IProject = {
+    name,
+  };
 
   try {
     let project = await Project.findById(req.params.id);
-
     if (!project) return res.status(404).json({ msg: "project not found" });
 
-    if (project.owner.toString() !== req.user.id)
+    if (project.owner?.toString() !== req.user.id.toString())
       return res.status(401).json({ msg: "the user is not authorized" });
 
     project = await Project.findByIdAndUpdate(
@@ -67,10 +68,10 @@ exports.updateProject = async (req, res) => {
       msg: "there was an error where triying to update the project",
     });
   }
-};
+}
 
-exports.deleteProject = async (req, res) => {
-  const errores = validationResult(req);
+export async function deleteProject(req: ProjectRequest, res: Response) {
+  const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });
 
@@ -78,7 +79,7 @@ exports.deleteProject = async (req, res) => {
     let project = await Project.findById(req.params.id);
     if (!project) return res.status(404).json({ msg: "project not found" });
 
-    if (project.owner.toString() !== req.user.id)
+    if (project.owner?.toString() !== req.user.id.toString())
       return res.status(401).json({ msg: "the user is not authorized" });
 
     await Project.findOneAndRemove({ _id: req.params.id });
@@ -90,4 +91,4 @@ exports.deleteProject = async (req, res) => {
       msg: "there was an error where triying to delete the project",
     });
   }
-};
+}
