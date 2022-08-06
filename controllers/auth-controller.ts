@@ -2,9 +2,9 @@ import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 import { Response } from "express";
 import User from "../models/Users";
+import { AuthRequest } from "../types/requests";
 
-// TODO check any type in req
-export async function authenticateUser(req: any, res: Response) {
+export async function authenticateUser(req: AuthRequest, res: Response) {
   const { email, password } = req.body;
 
   try {
@@ -40,9 +40,9 @@ export async function authenticateUser(req: any, res: Response) {
   }
 }
 
-export async function authenticatedUser(req: any, res: Response) {
+export async function authenticatedUser(req: AuthRequest, res: Response) {
   try {
-    const user = await User.findById(req.usuario.id).select("-password");
+    const user = await User.findById(req.user.id).select("-password");
     res.json({ user });
   } catch (error) {
     console.log(error);

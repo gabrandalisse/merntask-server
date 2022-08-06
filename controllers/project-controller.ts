@@ -1,9 +1,9 @@
+import { Response } from "express";
 import Project from "../models/Project";
-import { Request, Response } from "express";
+import { ProjectRequest } from "../types/requests";
 import { validationResult } from "express-validator";
 
-// TODO check any types on req
-export async function createProject(req: any, res: Response) {
+export async function createProject(req: ProjectRequest, res: Response) {
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });
@@ -23,7 +23,7 @@ export async function createProject(req: any, res: Response) {
   }
 }
 
-export async function getProjects(req: any, res: Response) {
+export async function getProjects(req: ProjectRequest, res: Response) {
   try {
     const projects = await Project.find({ owner: req.user.id }).sort({
       created: -1,
@@ -38,22 +38,21 @@ export async function getProjects(req: any, res: Response) {
   }
 }
 
-export async function updateProject(req: any, res: Response) {
+export async function updateProject(req: ProjectRequest, res: Response) {
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });
 
   const { name } = req.body;
-  const newProject: any = {};
-
-  newProject.name = name;
+  const newProject: IProject = {
+    name,
+  };
 
   try {
     let project = await Project.findById(req.params.id);
-
     if (!project) return res.status(404).json({ msg: "project not found" });
 
-    if (project.owner.toString() !== req.user.id)
+    if (project.owner?.toString() !== req.user.id.toString())
       return res.status(401).json({ msg: "the user is not authorized" });
 
     project = await Project.findByIdAndUpdate(
@@ -71,7 +70,7 @@ export async function updateProject(req: any, res: Response) {
   }
 }
 
-export async function deleteProject(req: any, res: Response) {
+export async function deleteProject(req: ProjectRequest, res: Response) {
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });
@@ -80,7 +79,7 @@ export async function deleteProject(req: any, res: Response) {
     let project = await Project.findById(req.params.id);
     if (!project) return res.status(404).json({ msg: "project not found" });
 
-    if (project.owner.toString() !== req.user.id)
+    if (project.owner?.toString() !== req.user.id.toString())
       return res.status(401).json({ msg: "the user is not authorized" });
 
     await Project.findOneAndRemove({ _id: req.params.id });

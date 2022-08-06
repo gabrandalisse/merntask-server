@@ -8,12 +8,12 @@ interface IUser {
 interface ITask {
   name: string;
   state: boolean;
-  created: Date;
-  project: any;
+  created?: Date;
+  project?: import('mongoose').Types.ObjectId;
 }
 
 interface IProject {
   name: string;
-  owner: any;
-  created: Date;
+  owner?: import('mongoose').Types.ObjectId;
+  created?: Date;
 }

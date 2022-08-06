@@ -1,10 +1,11 @@
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 import User from "../models/Users";
-import { Request, Response } from "express";
+import { Response } from "express";
+import { UserRequest } from "../types/requests";
 import { validationResult } from "express-validator";
 
-export async function createUser(req: Request, res: Response) {
+export async function createUser(req: UserRequest, res: Response) {
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });

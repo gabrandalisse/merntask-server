@@ -1,8 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 
-// TODO review any types
-export default function (req: any, res: Response, next: NextFunction) {
+export default function (req: Request, res: Response, next: NextFunction) {
   const token = req.header("x-auth-token");
   if (!token) return res.status(401).json({ msg: "the token is missing" });
 
