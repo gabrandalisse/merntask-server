@@ -1,19 +1,20 @@
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
+import User from "../models/User";
 import { Response } from "express";
-import User from "../models/Users";
 import { AuthRequest } from "../types/requests";
+import { AuthErrors, UserErrors } from "../types/enums";
 
 export async function authenticateUser(req: AuthRequest, res: Response) {
   const { email, password } = req.body;
 
   try {
     let user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ msg: "the user do not exists" });
+    if (!user) return res.status(400).json({ msg: UserErrors.NOT_EXISTS });
 
     const storedPass = await bcryptjs.compare(password, user.password);
     if (!storedPass)
-      return res.status(400).json({ msg: "the password is incorrect" });
+      return res.status(400).json({ msg: AuthErrors.INCORRECT_PASSWORD });
 
     // Create the JWT
     const payload = {

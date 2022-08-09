@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
-import User from "../models/Users";
+import User from "../models/User";
 import { Response } from "express";
+import { UserErrors } from "../types/enums";
 import { UserRequest } from "../types/requests";
 import { validationResult } from "express-validator";
 
@@ -14,7 +15,7 @@ export async function createUser(req: UserRequest, res: Response) {
 
   try {
     let user = await User.findOne({ email });
-    if (user) return res.status(400).json({ msg: "the user already exists" });
+    if (user) return res.status(400).json({ msg: UserErrors.ALREADY_EXISTS });
 
     user = new User(req.body);
 

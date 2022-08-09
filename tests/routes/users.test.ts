@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "../../src/app";
 import mongoose from "mongoose";
-import User from "../../src/models/Users";
+import User from "../../src/models/User";
 
 describe("unit test for users routes", () => {
   beforeAll(async () => {
