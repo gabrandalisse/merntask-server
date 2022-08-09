@@ -2,6 +2,7 @@ import { Response } from "express";
 import Project from "../models/Project";
 import { ProjectRequest } from "../types/requests";
 import { validationResult } from "express-validator";
+import { ProjectErrors, ProjectSuccess, AuthErrors } from "../types/enums";
 
 export async function createProject(req: ProjectRequest, res: Response) {
   const errors = validationResult(req);
@@ -50,10 +51,10 @@ export async function updateProject(req: ProjectRequest, res: Response) {
 
   try {
     let project = await Project.findById(req.params.id);
-    if (!project) return res.status(404).json({ msg: "project not found" });
+    if (!project) return res.status(404).json({ msg: ProjectErrors.NOT_FOUND });
 
     if (project.owner?.toString() !== req.user.id.toString())
-      return res.status(401).json({ msg: "the user is not authorized" });
+      return res.status(401).json({ msg: AuthErrors.USER_NOT_AUTHORIZED });
 
     project = await Project.findByIdAndUpdate(
       { _id: req.params.id },
@@ -77,14 +78,14 @@ export async function deleteProject(req: ProjectRequest, res: Response) {
 
   try {
     let project = await Project.findById(req.params.id);
-    if (!project) return res.status(404).json({ msg: "project not found" });
+    if (!project) return res.status(404).json({ msg: ProjectErrors.NOT_FOUND });
 
     if (project.owner?.toString() !== req.user.id.toString())
-      return res.status(401).json({ msg: "the user is not authorized" });
+      return res.status(401).json({ msg: AuthErrors.USER_NOT_AUTHORIZED });
 
     await Project.findOneAndRemove({ _id: req.params.id });
 
-    res.json({ msg: "project deleted" });
+    res.json({ msg: ProjectSuccess.DELETED });
   } catch (error) {
     console.log(error);
     res.status(500).json({

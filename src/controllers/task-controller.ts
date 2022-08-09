@@ -3,7 +3,12 @@ import { Response } from "express";
 import Project from "../models/Project";
 import { TaskRequest } from "../types/requests";
 import { validationResult } from "express-validator";
-
+import {
+  AuthErrors,
+  ProjectErrors,
+  TaskErrors,
+  TaskSuccess,
+} from "../types/enums";
 
 export async function createTask(req: TaskRequest, res: Response) {
   const errors = validationResult(req);
@@ -15,10 +20,10 @@ export async function createTask(req: TaskRequest, res: Response) {
 
     const storedProject = await Project.findById(project);
     if (!storedProject)
-      return res.status(404).json({ msg: "project not found" });
+      return res.status(404).json({ msg: ProjectErrors.NOT_FOUND });
 
     if (storedProject.owner?.toString() !== req.user.id.toString())
-      return res.status(401).json({ msg: "the user is not authorized" });
+      return res.status(401).json({ msg: AuthErrors.USER_NOT_AUTHORIZED });
 
     const task = new Task(req.body);
     await task.save();
@@ -38,10 +43,10 @@ export async function getTasks(req: TaskRequest, res: Response) {
 
     const storedProject = await Project.findById(project);
     if (!storedProject)
-      return res.status(404).json({ msg: "project not found" });
+      return res.status(404).json({ msg: ProjectErrors.NOT_FOUND });
 
     if (storedProject.owner?.toString() !== req.user.id.toString())
-      return res.status(401).json({ msg: "the user is not authorized" });
+      return res.status(401).json({ msg: AuthErrors.USER_NOT_AUTHORIZED });
 
     const tasks = await Task.find({ project });
     res.json({ tasks });
@@ -58,11 +63,11 @@ export async function updateTask(req: TaskRequest, res: Response) {
     const { project, name, state } = req.body;
 
     let task = await Task.findById(req.params.id);
-    if (!task) return res.status(404).json({ msg: "task not found" });
+    if (!task) return res.status(404).json({ msg: TaskErrors.NOT_FOUND });
 
     const storedProject = await Project.findById(project);
     if (storedProject?.owner?.toString() !== req.user.id.toString())
-      return res.status(401).json({ msg: "the user is not authorized" });
+      return res.status(401).json({ msg: AuthErrors.USER_NOT_AUTHORIZED });
 
     const newTask: ITask = {
       name,
@@ -87,14 +92,14 @@ export async function deleteTask(req: TaskRequest, res: Response) {
     const { project } = req.query;
 
     let task = await Task.findById(req.params.id);
-    if (!task) return res.status(404).json({ msg: "task not found" });
+    if (!task) return res.status(404).json({ msg: TaskErrors.NOT_FOUND });
 
     const storedProject = await Project.findById(project);
     if (storedProject?.owner?.toString() !== req.user.id.toString())
-      return res.status(401).json({ msg: "the user is not authorized" });
+      return res.status(401).json({ msg: AuthErrors.USER_NOT_AUTHORIZED });
 
     await Task.findOneAndRemove({ _id: req.params.id });
-    res.json({ msg: "task was deleted" });
+    res.json({ msg: TaskSuccess.DELETED });
   } catch (error) {
     console.log(error);
     res.status(500).json({
