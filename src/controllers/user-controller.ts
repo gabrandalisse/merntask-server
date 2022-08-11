@@ -1,34 +1,41 @@
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
-import User from "../models/User";
+// import User from "../models/User";
 import { Response } from "express";
 import { UserErrors } from "../types/enums";
 import { UserRequest } from "../types/requests";
 import { validationResult } from "express-validator";
+import User from '../entities/User';
+
+import { UserRepository } from "../repositories/UserRepository";
+
+// TODO make a controller class father where have the repository as attr
 
 export async function createUser(req: UserRequest, res: Response) {
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });
 
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
 
   try {
-    let user = await User.findOne({ email });
+    const repository = new UserRepository('users');
+
+    let user = await repository.findOne(email, 'email');
     if (user) return res.status(400).json({ msg: UserErrors.ALREADY_EXISTS });
 
-    user = new User(req.body);
+    user = new User(name, email, password);
 
     // Hash pass
     const salt = await bcryptjs.genSalt(10);
     user.password = await bcryptjs.hash(password, salt);
 
-    await user.save();
+    const newUserID = await repository.create(user);
 
     // Create the JWT
     const payload = {
       user: {
-        id: user.id,
+        id: newUserID,
       },
     };
 

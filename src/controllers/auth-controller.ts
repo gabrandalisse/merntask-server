@@ -1,25 +1,30 @@
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
-import User from "../models/User";
+// import User from "../models/User";
 import { Response } from "express";
 import { AuthRequest } from "../types/requests";
 import { AuthErrors, UserErrors } from "../types/enums";
+
+import { UserRepository } from "../repositories/UserRepository";
+import mongoose from "mongoose";
 
 export async function authenticateUser(req: AuthRequest, res: Response) {
   const { email, password } = req.body;
 
   try {
-    let user = await User.findOne({ email });
+    const userRepository = new UserRepository('users');
+
+    let user = await userRepository.findOne(email, 'email');
     if (!user) return res.status(400).json({ msg: UserErrors.NOT_EXISTS });
 
-    const storedPass = await bcryptjs.compare(password, user.password);
+    const storedPass = await bcryptjs.compare(password, user.password!);
     if (!storedPass)
       return res.status(400).json({ msg: AuthErrors.INCORRECT_PASSWORD });
 
     // Create the JWT
     const payload = {
       user: {
-        id: user.id,
+        id: user._id,
       },
     };
 
@@ -43,7 +48,12 @@ export async function authenticateUser(req: AuthRequest, res: Response) {
 
 export async function authenticatedUser(req: AuthRequest, res: Response) {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const userRepository = new UserRepository('users');
+    const userID = new mongoose.Types.ObjectId(req.params.id);
+
+    const user = await userRepository.findOne(userID, '_id');
+    delete user["password"];
+
     res.json({ user });
   } catch (error) {
     console.log(error);

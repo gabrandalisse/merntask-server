@@ -1,8 +1,11 @@
 import { Response } from "express";
-import Project from "../models/Project";
 import { ProjectRequest } from "../types/requests";
 import { validationResult } from "express-validator";
 import { ProjectErrors, ProjectSuccess, AuthErrors } from "../types/enums";
+
+import { ProjectRepository } from "../repositories/ProjectRepository";
+import Project from "../entities/Project";
+import mongoose from "mongoose";
 
 export async function createProject(req: ProjectRequest, res: Response) {
   const errors = validationResult(req);
@@ -10,10 +13,13 @@ export async function createProject(req: ProjectRequest, res: Response) {
     return res.status(400).json({ errors: errors.array() });
 
   try {
-    const project = new Project(req.body);
+    const repository = new ProjectRepository("projects");
 
-    project.owner = req.user.id;
-    project.save();
+    const { name } = req.body;
+    const { id: ownerID } = req.user;
+
+    const project = new Project(name, ownerID);
+    await repository.create(project);
 
     res.json(project);
   } catch (error) {
@@ -26,9 +32,8 @@ export async function createProject(req: ProjectRequest, res: Response) {
 
 export async function getProjects(req: ProjectRequest, res: Response) {
   try {
-    const projects = await Project.find({ owner: req.user.id }).sort({
-      created: -1,
-    });
+    const repository = new ProjectRepository("projects");
+    const projects = await repository.find(req.user.id, 'owner');
 
     res.json({ projects });
   } catch (error) {
@@ -45,22 +50,21 @@ export async function updateProject(req: ProjectRequest, res: Response) {
     return res.status(400).json({ errors: errors.array() });
 
   const { name } = req.body;
-  const newProject: IProject = {
-    name,
-  };
 
   try {
-    let project = await Project.findById(req.params.id);
+    const repository = new ProjectRepository("projects");
+
+    const projectID = new mongoose.Types.ObjectId(req.params.id);
+
+    let project = await repository.findOne(projectID, "_id");
     if (!project) return res.status(404).json({ msg: ProjectErrors.NOT_FOUND });
 
     if (project.owner?.toString() !== req.user.id.toString())
       return res.status(401).json({ msg: AuthErrors.USER_NOT_AUTHORIZED });
 
-    project = await Project.findByIdAndUpdate(
-      { _id: req.params.id },
-      { $set: newProject },
-      { new: true }
-    );
+    const newProject = new Project(name, project.owner);
+
+    project = await repository.update(projectID, newProject);
 
     res.json({ project });
   } catch (error) {
@@ -77,13 +81,18 @@ export async function deleteProject(req: ProjectRequest, res: Response) {
     return res.status(400).json({ errors: errors.array() });
 
   try {
-    let project = await Project.findById(req.params.id);
+    const repository = new ProjectRepository("projects");
+
+    const projectID = new mongoose.Types.ObjectId(req.params.id);
+
+    // TODO make an enum with filters
+    let project = await repository.findOne(projectID, "_id");
     if (!project) return res.status(404).json({ msg: ProjectErrors.NOT_FOUND });
 
     if (project.owner?.toString() !== req.user.id.toString())
       return res.status(401).json({ msg: AuthErrors.USER_NOT_AUTHORIZED });
 
-    await Project.findOneAndRemove({ _id: req.params.id });
+    await repository.delete(projectID);
 
     res.json({ msg: ProjectSuccess.DELETED });
   } catch (error) {
