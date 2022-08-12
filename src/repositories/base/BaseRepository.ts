@@ -1,35 +1,51 @@
-import { IRead } from "../interfaces/IRead";
 import { Collection, Types } from "mongoose";
-import { IWrite } from "../interfaces/IWrite";
 import { FilterType } from "../../types/enums";
-
-// TODO delete models? And use entities insthead?
 
 export default abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
   protected _collection!: Collection;
 
+  /**
+   * Insert a new item into the collection
+   * @param {T} item The item that will be created
+   * @returns {String} The id of the inserted item
+   */
   public async create(item: T): Promise<string> {
     const result = await this._collection.insertOne(item);
     return result.insertedId.toString();
   }
 
-  // TODO check any result, param id must be string | ObjectID
-  public async update(id: any, item: T): Promise<T> {
+  // TODO check any result
+  /**
+   * Update an item from the collection
+   * @param {ObjectId} id The id of the item to actualice 
+   * @param {T} item The new item with the new values to actualice
+   * @returns {T} The new updated item
+   */
+  public async update(id: Types.ObjectId, item: T): Promise<T> {
     const result = await this._collection.findOneAndUpdate(
       { _id: id },
       { $set: item as any },
       { returnDocument: "after" }
     );
 
-    return result.value as any;
+    return result.value as any;                       
   }
 
-  // TODO i think that id must be only ObjectId as the others
-  public async delete(id: any): Promise<void> {
+  /**
+   * Delete an item from the collection
+   * @param {ObjectId} id The id of the item to delete
+   */
+  public async delete(id: Types.ObjectId): Promise<void> {
     await this._collection.findOneAndDelete({ _id: id });
   }
 
   // TODO check the return type any
+  /**
+   * Return all the items of a collection 
+   * @param {String | ObjectId} id The id field of the items to filter, for example, ObjectId('ahg7sg6f89g')
+   * @param {FilterType} filter The name of the object attr to filter, for example, owner
+   * @returns {T[]} An array of filtered items
+   */
   public async find(
     id: string | Types.ObjectId,
     filter: FilterType
@@ -42,7 +58,13 @@ export default abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
     return result as any;
   }
 
-  // TODO fix the result as any and param id any must be string | ObjectId
+  // TODO fix the result as any and 
+  /**
+   * Return a single item of the collection
+   * @param {String | ObjectId} id The id field of the item to get, for example, ObjectId('ahg7sg6f89g')
+   * @param {FilterType} filter The name of the object attr to filter, for example, _id
+   * @returns {T} A item of the collection
+   */
   public async findOne(
     id: string | Types.ObjectId,
     filter: FilterType
