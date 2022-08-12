@@ -14,10 +14,9 @@ export default abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
     return result.insertedId.toString();
   }
 
-  // TODO check any result
   /**
    * Update an item from the collection
-   * @param {ObjectId} id The id of the item to actualice 
+   * @param {ObjectId} id The id of the item to actualice
    * @param {T} item The new item with the new values to actualice
    * @returns {T} The new updated item
    */
@@ -28,7 +27,7 @@ export default abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
       { returnDocument: "after" }
     );
 
-    return result.value as any;                       
+    return result.value as any;
   }
 
   /**
@@ -39,9 +38,8 @@ export default abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
     await this._collection.findOneAndDelete({ _id: id });
   }
 
-  // TODO check the return type any
   /**
-   * Return all the items of a collection 
+   * Return all the items of a collection
    * @param {String | ObjectId} id The id field of the items to filter, for example, ObjectId('ahg7sg6f89g')
    * @param {FilterType} filter The name of the object attr to filter, for example, owner
    * @returns {T[]} An array of filtered items
@@ -58,7 +56,6 @@ export default abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
     return result as any;
   }
 
-  // TODO fix the result as any and 
   /**
    * Return a single item of the collection
    * @param {String | ObjectId} id The id field of the item to get, for example, ObjectId('ahg7sg6f89g')
