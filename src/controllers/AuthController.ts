@@ -52,8 +52,8 @@ export default class AuthController {
   public authenticatedUser = async (req: AuthRequest, res: Response) => {
     try {
       const userID = new mongoose.Types.ObjectId(req.params.id);
-      const user = await this._user_repository.findOne(userID, "_id");
-      // todo see if i can delete the password
+      const user: Partial<IUser> = await this._user_repository.findOne(userID, "_id");
+      delete user.password;
 
       res.json({ user });
     } catch (error) {
