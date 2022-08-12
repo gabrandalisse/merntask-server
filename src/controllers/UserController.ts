@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 import { Response } from "express";
 import User from "../entities/User";
-import { UserErrors } from "../types/enums";
+import { FilterType, UserErrors } from "../types/enums";
 import { UserRequest } from "../types/requests";
 import { validationResult } from "express-validator";
 import { UserRepository } from "../repositories/UserRepository";
@@ -22,7 +22,7 @@ export default class UserController {
     const { email } = req.body;
 
     try {
-      let user = await this._user_repository.findOne(email, "email");
+      let user = await this._user_repository.findOne(email, FilterType.EMAIL);
       if (user) return res.status(400).json({ msg: UserErrors.ALREADY_EXISTS });
 
       const { name, password } = req.body;

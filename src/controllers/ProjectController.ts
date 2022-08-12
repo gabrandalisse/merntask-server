@@ -4,7 +4,7 @@ import Project from "../entities/Project";
 import { ProjectRequest } from "../types/requests";
 import { validationResult } from "express-validator";
 import { ProjectRepository } from "../repositories/ProjectRepository";
-import { AuthErrors, ProjectErrors, ProjectSuccess } from "../types/enums";
+import { AuthErrors, FilterType, ProjectErrors, ProjectSuccess } from "../types/enums";
 
 export default class ProjectController {
   private _project_repository: ProjectRepository;
@@ -38,7 +38,7 @@ export default class ProjectController {
     try {
       const projects = await this._project_repository.find(
         req.user.id,
-        "owner"
+        FilterType.OWNER
       );
 
       res.json({ projects });
@@ -58,7 +58,7 @@ export default class ProjectController {
     try {
       const projectID = new mongoose.Types.ObjectId(req.params.id);
 
-      let project = await this._project_repository.findOne(projectID, "_id");
+      let project = await this._project_repository.findOne(projectID, FilterType.ID);
       if (!project)
         return res.status(404).json({ msg: ProjectErrors.NOT_FOUND });
 
@@ -86,8 +86,7 @@ export default class ProjectController {
     try {
       const projectID = new mongoose.Types.ObjectId(req.params.id);
 
-      // TODO make an enum with filters
-      let project = await this._project_repository.findOne(projectID, "_id");
+      let project = await this._project_repository.findOne(projectID, FilterType.ID);
       if (!project)
         return res.status(404).json({ msg: ProjectErrors.NOT_FOUND });
 

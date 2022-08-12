@@ -7,6 +7,7 @@ import { TaskRepository } from "../repositories/TaskRepository";
 import { ProjectRepository } from "../repositories/ProjectRepository";
 import {
   AuthErrors,
+  FilterType,
   ProjectErrors,
   TaskErrors,
   TaskSuccess,
@@ -33,7 +34,7 @@ export default class TaskController {
 
       const storedProject = await this._project_repository.findOne(
         projectID,
-        "_id"
+        FilterType.ID
       );
       if (!storedProject)
         return res.status(404).json({ msg: ProjectErrors.NOT_FOUND });
@@ -61,7 +62,7 @@ export default class TaskController {
 
       const storedProject = await this._project_repository.findOne(
         projectID,
-        "_id"
+        FilterType.ID
       );
       if (!storedProject)
         return res.status(404).json({ msg: ProjectErrors.NOT_FOUND });
@@ -69,7 +70,7 @@ export default class TaskController {
       if (storedProject.owner?.toString() !== req.user.id.toString())
         return res.status(401).json({ msg: AuthErrors.USER_NOT_AUTHORIZED });
 
-      const tasks = await this._task_repository.find(projectID, "project");
+      const tasks = await this._task_repository.find(projectID, FilterType.PROJECT);
       res.json({ tasks });
     } catch (error) {
       console.log(error);
@@ -83,7 +84,7 @@ export default class TaskController {
     try {
       const taskID = new mongoose.Types.ObjectId(req.params.id);
 
-      let task = await this._task_repository.findOne(taskID, "_id");
+      let task = await this._task_repository.findOne(taskID, FilterType.ID);
       if (!task) return res.status(404).json({ msg: TaskErrors.NOT_FOUND });
 
       const { project } = req.body;
@@ -91,7 +92,7 @@ export default class TaskController {
 
       const storedProject = await this._project_repository.findOne(
         projectID,
-        "_id"
+        FilterType.ID
       );
       if (storedProject?.owner?.toString() !== req.user.id.toString())
         return res.status(401).json({ msg: AuthErrors.USER_NOT_AUTHORIZED });
@@ -114,7 +115,7 @@ export default class TaskController {
     try {
       const taskID = new mongoose.Types.ObjectId(req.params.id);
 
-      let task = await this._task_repository.findOne(taskID, "_id");
+      let task = await this._task_repository.findOne(taskID, FilterType.ID);
       if (!task) return res.status(404).json({ msg: TaskErrors.NOT_FOUND });
 
       const { project } = req.query;
@@ -122,7 +123,7 @@ export default class TaskController {
 
       const storedProject = await this._project_repository.findOne(
         projectID,
-        "_id"
+        FilterType.ID
       );
       if (storedProject?.owner?.toString() !== req.user.id.toString())
         return res.status(401).json({ msg: AuthErrors.USER_NOT_AUTHORIZED });

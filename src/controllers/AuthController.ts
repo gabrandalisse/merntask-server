@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import bcryptjs from "bcryptjs";
 import { Response } from "express";
 import { AuthRequest } from "../types/requests";
-import { AuthErrors, UserErrors } from "../types/enums";
+import { AuthErrors, FilterType, UserErrors } from "../types/enums";
 import { UserRepository } from "../repositories/UserRepository";
 
 export default class AuthController {
@@ -16,7 +16,7 @@ export default class AuthController {
   public authenticateUser = async (req: AuthRequest, res: Response) => {
     try {
       const { email } = req.body;
-      let user = await this._user_repository.findOne(email, "email");
+      let user = await this._user_repository.findOne(email, FilterType.EMAIL);
       if (!user) return res.status(400).json({ msg: UserErrors.NOT_EXISTS });
 
       const { password } = req.body;
@@ -52,7 +52,10 @@ export default class AuthController {
   public authenticatedUser = async (req: AuthRequest, res: Response) => {
     try {
       const userID = new mongoose.Types.ObjectId(req.params.id);
-      const user: Partial<IUser> = await this._user_repository.findOne(userID, "_id");
+      const user: Partial<IUser> = await this._user_repository.findOne(
+        userID,
+        FilterType.ID
+      );
       delete user.password;
 
       res.json({ user });

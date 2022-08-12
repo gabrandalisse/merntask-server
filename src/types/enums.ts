@@ -25,3 +25,10 @@ export enum ProjectSuccess {
 export enum TaskSuccess {
     DELETED = 'task was deleted'
 }
+
+export enum FilterType {
+    ID = '_id',
+    EMAIL = 'email',
+    OWNER = 'owner',
+    PROJECT = 'project'
+}
