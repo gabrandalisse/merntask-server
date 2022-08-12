@@ -1,9 +1,8 @@
 import { Types } from "mongoose";
 
 export default class Project implements IProject {
-  // TODO change class attr for _name and so on
+  _id?: Types.ObjectId;
   name: string;
-  // TODO user string for all the id in the app
   owner: Types.ObjectId;
   created: Date;
 

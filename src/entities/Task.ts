@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 
 export default class Task implements ITask {
+  _id?: Types.ObjectId;
   name: string;
   state: boolean;
   created: Date;
@@ -10,7 +11,7 @@ export default class Task implements ITask {
     name: string,
     project: Types.ObjectId,
     state = false,
-    created = new Date(),
+    created = new Date()
   ) {
     this.name = name;
     this.state = state;

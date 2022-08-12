@@ -18,7 +18,6 @@ export default class TaskController {
   private _task_repository: TaskRepository;
 
   constructor() {
-    // TODO make that the own repo knows is collection
     this._project_repository = new ProjectRepository();
     this._task_repository = new TaskRepository();
   }
