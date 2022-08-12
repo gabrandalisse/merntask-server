@@ -1,26 +1,27 @@
 import auth from "../middleware/auth";
 import express, { Router } from "express";
 import { check } from "express-validator";
-import * as ProjectController from "../controllers/project-controller";
+import ProjectController from "../controllers/ProjectController";
 
 const router: Router = express.Router();
+const controller: ProjectController = new ProjectController();
 
 router.post(
   "/",
   auth,
   [check("name", "the name of the project is required").not().isEmpty()],
-  ProjectController.createProject
+  controller.createProject
 );
 
-router.get("/", auth, ProjectController.getProjects);
+router.get("/", auth, controller.getProjects);
 
 router.put(
   "/:id",
   auth,
   [check("name", "the name of the project is required").not().isEmpty()],
-  ProjectController.updateProject
+  controller.updateProject
 );
 
-router.delete("/:id", auth, ProjectController.deleteProject);
+router.delete("/:id", auth, controller.deleteProject);
 
 export default router;

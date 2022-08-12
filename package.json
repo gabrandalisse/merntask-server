@@ -4,7 +4,7 @@
   "description": "the backend of the MERNTasks app",
   "main": "server.js",
   "scripts": {
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/server.js\"",
     "test": "jest --coverage"
   },
   "author": "Gabriel Andres Brandalisse",

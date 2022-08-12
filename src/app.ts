@@ -3,10 +3,10 @@ import connectToDB from "./config/db";
 import express, { Express } from "express";
 
 // Routes
-import AuthRoutes from "./routes/auth";
-import UserRoutes from "./routes/users";
-import TasksRoutes from "./routes/tasks";
-import ProjectsRoutes from "./routes/projects";
+import AuthRoutes from "./routes/auth.route";
+import UserRoutes from "./routes/users.route";
+import TasksRoutes from "./routes/tasks.route";
+import ProjectsRoutes from "./routes/projects.route";
 
 const app: Express = express();
 
