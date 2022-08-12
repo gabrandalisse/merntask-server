@@ -1,8 +1,9 @@
 import express, { Router } from "express";
 import { check } from "express-validator";
-import * as UserController from "../controllers/user-controller";
+import UserController from "../controllers/UserController";
 
 const router: Router = express.Router();
+const controller: UserController = new UserController();
 
 router.post(
   "/",
@@ -16,7 +17,7 @@ router.post(
       min: 6,
     }),
   ],
-  UserController.createUser
+  controller.createUser
 );
 
 export default router;
