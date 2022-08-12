@@ -32,3 +32,9 @@ export enum FilterType {
     OWNER = 'owner',
     PROJECT = 'project'
 }
+
+export enum CollectionType {
+    PROJECTS = 'projects',
+    TASKS = 'tasks',
+    USERS = 'users'
+}

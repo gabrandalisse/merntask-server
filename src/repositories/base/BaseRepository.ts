@@ -1,17 +1,12 @@
 import { IRead } from "../interfaces/IRead";
+import { Collection, Types } from "mongoose";
 import { IWrite } from "../interfaces/IWrite";
 import { FilterType } from "../../types/enums";
-import mongoose, { Collection, Types } from "mongoose";
 
 // TODO delete models? And use entities insthead?
 
 export default abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
-  // TODO make this private?
-  public readonly _collection: Collection;
-
-  constructor(collectionName: string) {
-    this._collection = mongoose.connection.collection(collectionName);
-  }
+  protected _collection!: Collection;
 
   public async create(item: T): Promise<string> {
     const result = await this._collection.insertOne(item);

@@ -2,16 +2,16 @@ import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 import { Response } from "express";
 import User from "../entities/User";
-import { FilterType, UserErrors } from "../types/enums";
 import { UserRequest } from "../types/requests";
 import { validationResult } from "express-validator";
-import { UserRepository } from "../repositories/UserRepository";
+import { FilterType, UserErrors } from "../types/enums";
+import UserRepository from "../repositories/UserRepository";
 
 export default class UserController {
   private _user_repository: UserRepository;
 
   constructor() {
-    this._user_repository = new UserRepository("users");
+    this._user_repository = new UserRepository();
   }
 
   public createUser = async (req: UserRequest, res: Response) => {

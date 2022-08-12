@@ -3,8 +3,8 @@ import { Response } from "express";
 import Task from "../entities/Task";
 import { TaskRequest } from "../types/requests";
 import { validationResult } from "express-validator";
-import { TaskRepository } from "../repositories/TaskRepository";
-import { ProjectRepository } from "../repositories/ProjectRepository";
+import TaskRepository from "../repositories/TaskRepository";
+import ProjectRepository from "../repositories/ProjectRepository";
 import {
   AuthErrors,
   FilterType,
@@ -19,8 +19,8 @@ export default class TaskController {
 
   constructor() {
     // TODO make that the own repo knows is collection
-    this._project_repository = new ProjectRepository("projects");
-    this._task_repository = new TaskRepository("tasks");
+    this._project_repository = new ProjectRepository();
+    this._task_repository = new TaskRepository();
   }
 
   public createTask = async (req: TaskRequest, res: Response) => {
@@ -70,7 +70,10 @@ export default class TaskController {
       if (storedProject.owner?.toString() !== req.user.id.toString())
         return res.status(401).json({ msg: AuthErrors.USER_NOT_AUTHORIZED });
 
-      const tasks = await this._task_repository.find(projectID, FilterType.PROJECT);
+      const tasks = await this._task_repository.find(
+        projectID,
+        FilterType.PROJECT
+      );
       res.json({ tasks });
     } catch (error) {
       console.log(error);

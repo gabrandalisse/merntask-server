@@ -3,14 +3,14 @@ import { Response } from "express";
 import Project from "../entities/Project";
 import { ProjectRequest } from "../types/requests";
 import { validationResult } from "express-validator";
-import { ProjectRepository } from "../repositories/ProjectRepository";
+import  ProjectRepository  from "../repositories/ProjectRepository";
 import { AuthErrors, FilterType, ProjectErrors, ProjectSuccess } from "../types/enums";
 
 export default class ProjectController {
   private _project_repository: ProjectRepository;
 
   constructor() {
-    this._project_repository = new ProjectRepository("projects");
+    this._project_repository = new ProjectRepository();
   }
 
   public createProject = async (req: ProjectRequest, res: Response) => {

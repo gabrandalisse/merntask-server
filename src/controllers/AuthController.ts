@@ -3,14 +3,14 @@ import mongoose from "mongoose";
 import bcryptjs from "bcryptjs";
 import { Response } from "express";
 import { AuthRequest } from "../types/requests";
+import UserRepository from "../repositories/UserRepository";
 import { AuthErrors, FilterType, UserErrors } from "../types/enums";
-import { UserRepository } from "../repositories/UserRepository";
 
 export default class AuthController {
   private _user_repository: UserRepository;
 
   constructor() {
-    this._user_repository = new UserRepository("users");
+    this._user_repository = new UserRepository();
   }
 
   public authenticateUser = async (req: AuthRequest, res: Response) => {
