@@ -1,0 +1,470 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.1.0",
+    "title": "MERNTasks Backend API",
+    "description": "The documentation of the endpoints of MERNTasks aplication.",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "contact": {
+      "email": "gabibrandalisse@gmail.com"
+    }
+  },
+  "host": "localhost:4000",
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "API for the users authentication in the system"
+    },
+    {
+      "name": "Users",
+      "description": "API for the users in the system"
+    },
+    {
+      "name": "Projects",
+      "description": "API for the projects in the system"
+    },
+    {
+      "name": "Tasks",
+      "description": "API for the project tasks in the system."
+    },
+    {
+      "name": "Utils",
+      "description": "API for the utils in the system"
+    }
+  ],
+  "paths": {
+    "/auth": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Authenticate a user",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "body",
+            "required": "true",
+            "description": "The email of the user to authenticate",
+            "type": "string",
+            "example": "gabirel@admin.com"
+          },
+          {
+            "name": "password",
+            "in": "body",
+            "required": "true",
+            "description": "The password of the user to authenticate",
+            "type": "string",
+            "example": "admin123"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A token with the user information"
+          },
+          "400": {
+            "description": "If the user does not exists or if the password is incorrect"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Auth"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "params",
+            "required": "true",
+            "description": "The id of the user to authenticate",
+            "type": "string",
+            "example": "42j42lk5n"
+          }
+        ],
+        "summary": "Return the user information",
+        "responses": {
+          "200": {
+            "description": "The user information except the password"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Create an user in the application",
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the user to create",
+            "in": "body",
+            "required": "true",
+            "type": "string",
+            "example": "Gabriel"
+          },
+          {
+            "name": "email",
+            "description": "The email of the user to create",
+            "in": "body",
+            "required": "true",
+            "type": "string",
+            "example": "gabirel@admin.com"
+          },
+          {
+            "name": "password",
+            "description": "The password of the user to create",
+            "in": "body",
+            "required": "true",
+            "type": "string",
+            "example": "42j42lk5n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A token with the user information"
+          },
+          "400": {
+            "description": "The user already exists"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/projects": {
+      "parameters": [
+        {
+          "name": "token",
+          "description": "The users access token",
+          "in": "headers",
+          "required": "true",
+          "type": "string",
+          "example": "ey.dsfa23fg45g..."
+        }
+      ],
+      "post": {
+        "tags": ["Projects"],
+        "summary": "Create a new project",
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the project to create",
+            "in": "body",
+            "required": "true",
+            "type": "string",
+            "example": "First Project"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The new project"
+          },
+          "400": {
+            "description": "An array with body validation errors"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Projects"],
+        "summary": "Get all the projects of the user",
+        "responses": {
+          "200": {
+            "description": "An array with all the projects of the user"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/projects/:id": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": "true",
+          "description": "The id of the project to edit",
+          "type": "string",
+          "example": "42j42lk5n"
+        },
+        {
+          "name": "token",
+          "in": "headers",
+          "required": "true",
+          "description": "The users access token",
+          "type": "string",
+          "example": "ey.dsfa23fg45g..."
+        }
+      ],
+      "put": {
+        "tags": ["Projects"],
+        "summary": "Edit a project",
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the project to edit",
+            "in": "body",
+            "required": "true",
+            "type": "string",
+            "example": "Edited Project"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The edited project"
+          },
+          "404": {
+            "description": "The project not exists"
+          },
+          "401": {
+            "description": "The user does not have permissions to realize this action"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Projects"],
+        "summary": "Delete a project",
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the project to delete",
+            "in": "body",
+            "required": "true",
+            "type": "string",
+            "example": "Edited Project"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The project was deleted successfully"
+          },
+          "400": {
+            "description": "An array with body validation errors"
+          },
+          "404": {
+            "description": "The project not exists"
+          },
+          "401": {
+            "description": "The user does not have permissions to realize this action"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/tasks": {
+      "parameters": [
+        {
+          "name": "token",
+          "description": "The users access token",
+          "in": "headers",
+          "required": "true",
+          "type": "string",
+          "example": "ey.dsfa23fg45g..."
+        }
+      ],
+      "post": {
+        "tags": ["Tasks"],
+        "summary": "Create a new task in the project",
+        "parameters": [
+          {
+            "name": "name",
+            "description": "The name of the task to create",
+            "in": "body",
+            "required": "true",
+            "type": "string",
+            "example": "First Task"
+          },
+          {
+            "name": "project",
+            "description": "The id of the project in which the task will be added to",
+            "in": "body",
+            "required": "true",
+            "type": "string",
+            "example": "42j42lk5n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The new task"
+          },
+          "400": {
+            "description": "An array with body validation errors"
+          },
+          "404": {
+            "description": "The project not exists"
+          },
+          "401": {
+            "description": "The user does not have permissions to realize this action"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Tasks"],
+        "summary": "Get all the tasks of a project",
+        "parameters": [
+          {
+            "name": "project",
+            "description": "The id of the project",
+            "in": "query",
+            "required": "true",
+            "type": "string",
+            "example": "42j42lk5n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array with all the tasks of the project"
+          },
+          "404": {
+            "description": "The project not exists"
+          },
+          "401": {
+            "description": "The user does not have permissions to realize this action"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/tasks/:id": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": "true",
+          "description": "The id of the project to edit",
+          "type": "string",
+          "example": "42j42lk5n"
+        },
+        {
+          "name": "token",
+          "in": "headers",
+          "required": "true",
+          "description": "The users access token",
+          "type": "string",
+          "example": "ey.dsfa23fg45g..."
+        }
+      ],
+      "put": {
+        "tags": ["Tasks"],
+        "summary": "Edit a task",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The id of the task to edit",
+            "in": "params",
+            "required": "true",
+            "type": "string",
+            "example": "42j42lk5n"
+          },
+          {
+            "name": "name",
+            "description": "The name of the task to edit",
+            "in": "body",
+            "required": "true",
+            "type": "string",
+            "example": "Edited Task"
+          },
+          {
+            "name": "project",
+            "description": "The id of the project",
+            "in": "body",
+            "required": "true",
+            "type": "string",
+            "example": "42j42lk5n"
+          },
+          {
+            "name": "state",
+            "description": "The new state of the task",
+            "in": "body",
+            "required": "true",
+            "type": "boolean",
+            "example": "true"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The edited task"
+          },
+          "404": {
+            "description": "The task not exists"
+          },
+          "401": {
+            "description": "The user does not have permissions to realize this action"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Tasks"],
+        "summary": "Delete a task",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The id of the task to delete",
+            "in": "params",
+            "required": "true",
+            "type": "string",
+            "example": "42j42lk5n"
+          },
+          {
+            "name": "project",
+            "description": "The id of the project",
+            "in": "query",
+            "required": "true",
+            "type": "string",
+            "example": "42j42lk5n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The project was deleted successfully"
+          },
+          "404": {
+            "description": "The tasks not exists"
+          },
+          "401": {
+            "description": "The user does not have permissions to realize this action"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/utils": {
+      "post": {
+        "tags": ["Utils"],
+        "summary": "Check the state of the app",
+        "responses": {
+          "200": {
+            "description": "The app is correct"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  }
+}
