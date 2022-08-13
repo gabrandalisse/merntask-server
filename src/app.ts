@@ -5,6 +5,7 @@ import express, { Express } from "express";
 // Routes
 import AuthRoutes from "./routes/auth.route";
 import UserRoutes from "./routes/users.route";
+import UtilsRoute from './routes/utils.route';
 import TasksRoutes from "./routes/tasks.route";
 import ProjectsRoutes from "./routes/projects.route";
 
@@ -21,5 +22,6 @@ app.use("/api/users", UserRoutes);
 app.use("/api/auth", AuthRoutes);
 app.use("/api/projects", ProjectsRoutes);
 app.use("/api/tasks", TasksRoutes);
+app.use("/api/utils", UtilsRoute);
 
 export default app;
