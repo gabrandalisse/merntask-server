@@ -1,7 +1,6 @@
 import cors from "cors";
 import connectToDB from "./config/db";
 import express, { Express } from "express";
-
 import * as swaggerUI from 'swagger-ui-express';
 import swaggerDocument from './docs/swagger.json';
 
