@@ -1,3 +1,7 @@
-node_modules
+# Folders
+node_modules/
+dist/
+coverage/
 
-variables.env
+# Files
+.env
