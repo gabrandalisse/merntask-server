@@ -2,7 +2,7 @@ import request from "supertest";
 import app from "../../src/app";
 import mongoose from "mongoose";
 import bcryptjs from "bcryptjs";
-import User from "../../src/models/User";
+import UserRepository from "../../src/repositories/UserRepository";
 
 describe("unit test for auth routes", () => {
   beforeAll(async () => {
@@ -19,8 +19,8 @@ describe("unit test for auth routes", () => {
 
   it("should return an error when the user do not exists", async () => {
     jest
-      .spyOn(User, "findOne")
-      .mockImplementation(() => Promise.resolve(false) as any);
+      .spyOn(UserRepository.prototype, "findOne")
+      .mockReturnValue(false as any);
 
     const res = await request(app).post("/api/auth").send({
       email: "test-user@gmail.com",
@@ -33,9 +33,7 @@ describe("unit test for auth routes", () => {
   });
 
   it("should return an error when the user password is incorrect", async () => {
-    jest
-      .spyOn(User, "findOne")
-      .mockImplementation(() => Promise.resolve({}) as any);
+    jest.spyOn(UserRepository.prototype, "findOne").mockReturnValue({} as any);
 
     jest
       .spyOn(bcryptjs, "compare")
@@ -52,9 +50,7 @@ describe("unit test for auth routes", () => {
   });
 
   it("should return a token when the user is authenticated", async () => {
-    jest
-      .spyOn(User, "findOne")
-      .mockImplementation(() => Promise.resolve({}) as any);
+    jest.spyOn(UserRepository.prototype, "findOne").mockReturnValue({} as any);
 
     jest
       .spyOn(bcryptjs, "compare")
