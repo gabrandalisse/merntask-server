@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "../../src/app";
 import mongoose from "mongoose";
-import User from "../../src/models/User";
+import UserRepository from '../../src/repositories/UserRepository';
 
 describe("unit test for users routes", () => {
   beforeAll(async () => {
@@ -94,9 +94,9 @@ describe("unit test for users routes", () => {
 
   it("should return a token when the user is created correctly", async () => {
     jest
-      .spyOn(User, "findOne")
+      .spyOn(UserRepository.prototype, "findOne")
       .mockImplementation(() => Promise.resolve(null) as any);
-    jest.spyOn(User.prototype, "save").mockReturnValue(true);
+    jest.spyOn(UserRepository.prototype, "create").mockReturnValue(true as any);
 
     const res = await request(app).post("/api/users").send({
       name: "Gabriel",
@@ -109,7 +109,7 @@ describe("unit test for users routes", () => {
 
   it("should return a error when the user to create already exists", async () => {
     jest
-      .spyOn(User, "findOne")
+      .spyOn(UserRepository.prototype, "findOne")
       .mockImplementation(() => Promise.resolve({}) as any);
 
     const res = await request(app).post("/api/users").send({

@@ -51,7 +51,7 @@ export default class AuthController {
 
   public authenticatedUser = async (req: AuthRequest, res: Response) => {
     try {
-      const userID = new mongoose.Types.ObjectId(req.params.id);
+      const userID = new mongoose.Types.ObjectId(req.user.id);
       const user: Partial<IUser> = await this._user_repository.findOne(
         userID,
         FilterType.ID
