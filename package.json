@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/server.js\"",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "postinstall": "tsc",
+    "start": "node dist/src/server.js"
   },
   "author": "Gabriel Andres Brandalisse",
   "license": "ISC",
@@ -34,5 +36,6 @@
     "express-validator": "^6.14.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.5.0"
-  }
+  },
+  "engines": { "node": "16.13.0" }
 }
